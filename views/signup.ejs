@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<script src="/js/bootstrap.min.js"></script>
+		<title>Login</title>
+	</head>
+	<body>
+		<%- include('./partials/navbar'); %>
+		<div class="container">
+			<form class="mt-5" action="/signup" method="post">
+				<% if(message.length >0){%>
+				<div class="alert alert-primary" role="alert"><span class="mx-auto"><%= message %></span></div>
+				<%}%>
+				<div class="form-group">
+					<label for="name">Name</label>
+					<input type="text" class="form-control" name="name" id="name" placeholder="Enter Name" />
+				</div>
+				<div class="form-group">
+					<label for="username">Username</label>
+					<input type="text" class="form-control" name="username" id="username" placeholder="username" />
+				</div>
+				<div class="form-group">
+					<label for="password">Password</label>
+					<input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+				</div>
+				<div class="form-group">
+					<label for="confirmPassword">Confirm Password</label>
+					<input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" />
+				</div>
+
+				<button type="submit" class="btn btn-primary mt-3">Submit</button>
+			</form>
+		</div>
+	</body>
+</html>
