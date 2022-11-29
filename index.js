@@ -23,7 +23,7 @@ app.locals.baseURL = process.env.BASE_URL;
 
 //Connecting to the MongoDB Altas Database
 
-const connURL = "mongodb+srv://root:123@cluster0.6pmfocv.mongodb.net/?retryWrites=true&w=majority";
+const connURL = process.env.MONGODB_URI;
 mongoose.connect(connURL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
