@@ -39,7 +39,7 @@ app.listen(8080, () => {
 });
 
 app.get("/", (req, res) => {
-	res.render("index");
+	res.render("index",{ message: "", username:req?.session?.username });
 });
 
 app.get("/contact", (req, res) => {
@@ -47,7 +47,7 @@ app.get("/contact", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-	res.render("login.ejs", { message: "" });
+	res.render("login.ejs", { message: "",username:req?.session?.username  });
 });
 
 app.post("/login", async (req, res) => {
@@ -55,25 +55,25 @@ app.post("/login", async (req, res) => {
 		const { loginUser, loginPassword } = req.body;
 		const user = await User.findOne({ username: loginUser, password: loginPassword });
 		if (!user) {
-			res.render("login", { message: "Username or password incorrect" });
+			res.render("login", { message: "Username or password incorrect" ,username:req?.session?.username });
 		} else {
-			res.locals.username = req.body.username;
+			res.locals.username = req.body.loginUser;
 			req.session.loggedIn = true;
 			req.session.username = res.locals.username;
 			res.redirect("dashboard");
 		}
 	} catch (err) {
-		res.render("login", { message: "Error Occured" });
+		res.render("login", { message: "Error Occured",username:req?.session?.username  });
 	}
 });
 
 app.get("/logout", (req, res) => {
-	req.session.destroy((err) => {});
+	req.session.destroy((err) => { });
 	res.redirect("/");
 });
 
 app.get("/signup", (req, res) => {
-	res.render("signup.ejs", { message: "" });
+	res.render("signup.ejs", { message: "" ,username:req?.session?.username });
 });
 
 app.post("/signup", async (req, res) => {
@@ -81,32 +81,41 @@ app.post("/signup", async (req, res) => {
 		console.log(req.body);
 
 		if (req.body.password !== req.body.confirmPassword) {
-			return res.render("signup.ejs", { message: "Password mismatch" });
+			return res.render("signup.ejs", { message: "Password mismatch" ,username:req?.session?.username });
 		}
 		const newUser = await User.create(req.body);
 
-		res.render("signup.ejs", { message: `Registered Successfully, Please login to continue` });
+		res.render("signup.ejs", { message: `Registered Successfully, Please login to continue`,username:req?.session?.username  });
 	} catch (err) {
 		console.log(err);
-		res.render("signup.ejs", { message: "Registration Failed" });
+		res.render("signup.ejs", { message: "Registration Failed" ,username:req?.session?.username });
 	}
 });
 
 app.get("/dashboard", (req, res) => {
 	if (req.session.loggedIn) {
-		res.render("dashboard.ejs", { message: "" });
+		console.log(req.session.username)
+		res.render("dashboard.ejs", { message: "" , username:req.session.username});
 	} else {
 		res.redirect("/login");
 	}
 });
 
 app.post("/addNewWord", async (req, res) => {
-	const { word } = req.body;
-	const keysOpt = JSON.parse(fs.readFileSync("./public/words.json"));
-	keysOpt[word] = 1;
-	fs.writeFileSync("./public/words.json", JSON.stringify(keysOpt, null, " "));
-	console.log(word);
-	res.status(200).json({ message: "Dictionary Updated" });
+
+	try {
+		const { word } = req.body;
+		const keysOpt = JSON.parse(fs.readFileSync("./public/words.json"));
+		keysOpt[word] = 1;
+		fs.writeFileSync("./public/words.json", JSON.stringify(keysOpt, null, " "));
+		console.log(word);
+		await UserAttempt.deleteMany({ word: word });
+		res.status(200).json({ message: "Dictionary Updated" });
+	}
+	catch (err) {
+		res.status(500).json({ message: "Failed" });
+	}
+
 });
 
 app.post("/addSearchedWord", async (req, res) => {
@@ -114,13 +123,27 @@ app.post("/addSearchedWord", async (req, res) => {
 		console.log("here");
 		const { word, isCorrect } = req.body;
 		console.log(req.body);
-		const addedWord = await UserAttempt.create({ word: word, isCorrect: isCorrect, timestamp: Date.now() });
+		const addedWord = await UserAttempt.create({ word: word, isCorrect: isCorrect, requested:false, timestamp: Date.now() });
 		res.status(200).json({ message: "Added new data" });
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({ message: err });
 	}
 });
+
+app.post("/addRequest", async (req, res) => {
+	try {
+		console.log("here");
+		const { word, isCorrect,requested } = req.body;
+		
+		await UserAttempt.updateOne({ word: word, isCorrect: isCorrect},{requested:requested});
+		res.status(200).json({ message: "Added new data" });
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ message: err });
+	}
+});
+
 
 app.get("/userAttempts", async (req, res) => {
 	try {
@@ -134,6 +157,15 @@ app.get("/userAttempts", async (req, res) => {
 app.get("/failedAttempts", async (req, res) => {
 	try {
 		const userAttempts = await UserAttempt.find({ isCorrect: false });
+		res.status(200).json({ message: "Success", data: userAttempts });
+	} catch (err) {
+		res.status(500).json({ message: err });
+	}
+});
+
+app.get("/requestedWords", async (req, res) => {
+	try {
+		const userAttempts = await UserAttempt.find({ isCorrect: false, requested:true });
 		res.status(200).json({ message: "Success", data: userAttempts });
 	} catch (err) {
 		res.status(500).json({ message: err });

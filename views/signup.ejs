@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<div class="vh-100" style="background-image: url('<%= `${baseURL}\signupLogo.jpg`%>'); background-size: cover">
-			<%- include('./partials/navbar'); %>
+			<%- include('./partials/navbar',{username:username}); %>
 			<div class="container">
 				<form class="mt-5" action="/signup" method="post">
 					<% if(message.length >0){%>

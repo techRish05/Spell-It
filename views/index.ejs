@@ -10,8 +10,8 @@
 		<script src="/js/bootstrap.min.js"></script>
 	</head>
 	<body>
-		<div class="vh-100" style="background-image: url('<%= `${baseURL}\homeLogo.jpg`%>'); background-size: cover">
-			<%- include('./partials/navbar'); %>
+		<div class="vh-100 bg-light bg-gradient" style="background-image: url('<%= `${baseURL}\homeLogo.jpg`%>'); background-size: cover">
+			<%- include('./partials/navbar',{username:username}); %>
 			<div class="container">
 				<form class="mt-5" action="#">
 					<div class="form-group">
@@ -26,7 +26,7 @@
 						<div id="result" class="form-group"></div>
 					</div>
 					<div class="form-group mt-3">
-						<input type="button" onclick="handleAddToDatabase()" id="databaseAdd" class="btn btn-primary d-none" value="Add to Database" />
+						<input type="button" onclick="handleAddToDatabase()" id="databaseAdd" class="btn btn-primary d-none" value="Request, Add to Database" />
 					</div>
 				</form>
 			</div>

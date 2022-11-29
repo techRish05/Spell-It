@@ -64,6 +64,7 @@ async function handleClick() {
 	let isCorrect = false;
 	if (userWord in words) {
 		resultDiv.innerHTML = "<p>Word is Spelled Correctly!</p>";
+		document.getElementById("databaseAdd").classList.add("d-none");
 		isCorrect = true;
 	} else {
 		Object.entries(words).forEach(([k, v]) => {
@@ -87,20 +88,20 @@ async function handleClick() {
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ word: userWord, isCorrect: isCorrect }),
+		body: JSON.stringify({ word: userWord, isCorrect: isCorrect, requested:false }),
 	});
 }
 
 async function handleAddToDatabase() {
 	let userWord = document.getElementById("enteredWord").value;
-	document.getElementById("databaseAdd").value = "Adding";
-	const response = await fetch("/addNewWord", {
+	let res = await fetch("/addRequest", {
 		method: "POST",
+		mode: "cors",
 		headers: {
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ word: userWord }),
+		body: JSON.stringify({ word: userWord, isCorrect: false, requested:true }),
 	});
-	document.getElementById("databaseAdd").value = "Added";
-	console.log(response);
+	alert("Request sended to admin");
+	location.reload();
 }

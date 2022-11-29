@@ -8,6 +8,10 @@ const userAttemptSchema = new mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
+	requested:{
+		type: Boolean, 
+		default: false,
+	},
 	timestamp: {
 		type: Date,
 		default: Date.now,
