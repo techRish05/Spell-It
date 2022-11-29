@@ -10,25 +10,26 @@
 		<script src="/js/bootstrap.min.js"></script>
 	</head>
 	<body>
-		<%- include('./partials/navbar'); %>
+		<div class="vh-100" style="background-image: url('<%= `${baseURL}\homeLogo.jpg`%>'); background-size: cover">
+			<%- include('./partials/navbar'); %>
+			<div class="container">
+				<form class="mt-5" action="#">
+					<div class="form-group">
+						<label for="userWord">Enter your word</label>
+						<input class="form-control" type="text" name="userWord" id="enteredWord" required />
+					</div>
 
-		<div class="container">
-			<form class="mt-5" action="#">
-				<div class="form-group">
-					<label for="userWord">Enter your word</label>
-					<input class="form-control" type="text" name="userWord" id="enteredWord" required />
-				</div>
-
-				<div class="form-group mt-3">
-					<input type="button" onclick="handleClick()" class="btn btn-primary" value="Submit" />
-				</div>
-				<div class="form-group mt-5">
-					<div id="result" class="form-group"></div>
-				</div>
-				<div class="form-group mt-3">
-					<input type="button" onclick="handleAddToDatabase()" id="databaseAdd" class="btn btn-primary d-none" value="Add to Database" />
-				</div>
-			</form>
+					<div class="form-group mt-3">
+						<input type="button" onclick="handleClick()" class="btn btn-primary" value="Submit" />
+					</div>
+					<div class="form-group mt-5">
+						<div id="result" class="form-group"></div>
+					</div>
+					<div class="form-group mt-3">
+						<input type="button" onclick="handleAddToDatabase()" id="databaseAdd" class="btn btn-primary d-none" value="Add to Database" />
+					</div>
+				</form>
+			</div>
 		</div>
 	</body>
 </html>

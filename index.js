@@ -6,6 +6,7 @@ const User = require("./model/user");
 const UserAttempt = require("./model/userAttempt");
 const session = require("express-session");
 const fs = require("fs");
+require("dotenv").config();
 
 //Setting the encodings for post requests
 app.use(express.json()); // to support JSON-encoded bodies
@@ -18,10 +19,11 @@ app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist
 app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/jquery/dist")));
 app.use(session({ secret: "sdksjdk03903902", name: "uniqueSessionID", saveUninitialized: false }));
+app.locals.baseURL = process.env.BASE_URL;
 
 //Connecting to the MongoDB Altas Database
 
-const connURL = "mongodb://root:123@cluster0.6pmfocv.mongodb.net/?retryWrites=true&w=majority";
+const connURL = "mongodb+srv://root:123@cluster0.6pmfocv.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(connURL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
@@ -83,7 +85,7 @@ app.post("/signup", async (req, res) => {
 		}
 		const newUser = await User.create(req.body);
 
-		res.render("signup.ejs", { message: `Registered Successfully ,login to continue</a>` });
+		res.render("signup.ejs", { message: `Registered Successfully, Please login to continue` });
 	} catch (err) {
 		console.log(err);
 		res.render("signup.ejs", { message: "Registration Failed" });

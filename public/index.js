@@ -63,7 +63,7 @@ async function handleClick() {
 
 	let isCorrect = false;
 	if (userWord in words) {
-		resultDiv.innerHTML = "<p>Spelled Correctly!</p>";
+		resultDiv.innerHTML = "<p>Word is Spelled Correctly!</p>";
 		isCorrect = true;
 	} else {
 		Object.entries(words).forEach(([k, v]) => {
